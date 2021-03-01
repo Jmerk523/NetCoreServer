@@ -130,10 +130,26 @@ namespace NetCoreServer
         /// Is the server started?
         /// </summary>
         public bool IsStarted { get; private set; }
+
+        private bool _isAccepting;
         /// <summary>
         /// Is the server accepting new clients?
         /// </summary>
-        public bool IsAccepting { get; private set; }
+        public bool IsAccepting
+        {
+            get => _isAccepting;
+            protected set
+            {
+                if (_isAccepting != value)
+                {
+                    _isAccepting = value;
+                    if (_isAccepting)
+                    {
+                        StartAccept(_acceptorEventArg);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Create a new socket object
@@ -199,7 +215,7 @@ namespace NetCoreServer
 
             // Perform the first server accept
             IsAccepting = true;
-            StartAccept(_acceptorEventArg);
+            //StartAccept(_acceptorEventArg);
 
             return true;
         }
@@ -550,11 +566,11 @@ namespace NetCoreServer
         }
 
         // Use C# destructor syntax for finalization code.
-        ~TcpServer()
-        {
-            // Simply call Dispose(false).
-            Dispose(false);
-        }
+        //~TcpServer()
+        //{
+        //    // Simply call Dispose(false).
+        //    Dispose(false);
+        //}
 
         #endregion
     }

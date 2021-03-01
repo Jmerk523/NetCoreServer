@@ -6,8 +6,20 @@ namespace NetCoreServer
     /// <summary>
     /// Conversion metrics utilities
     /// </summary>
-    public class Utilities
+    public static class Utilities
     {
+        public static T[] Slice<T>(this T[] array, int offset, int count)
+        {
+            var newArray = new T[count];
+            Array.Copy(array, offset, newArray, 0, count);
+            return newArray;
+        }
+
+        public static T[] Range<T>(this T[] array, int start, int end)
+        {
+            return Slice(array, start, end - start);
+        }
+
         /// <summary>
         /// Generate data size string. Will return a pretty string of bytes, KiB, MiB, GiB, TiB based on the given bytes.
         /// </summary>

@@ -2,6 +2,7 @@
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace NetCoreServer
 {
@@ -237,7 +238,7 @@ namespace NetCoreServer
 
             // WebSocket successfully handshaked!
             WsHandshaked = true;
-            Array.Fill(WsSendMask, (byte)0);
+            Array.Clear(WsSendMask, 0, WsSendMask.Length);
             _wsHandler.OnWsConnected(request);
 
             return true;
@@ -405,7 +406,10 @@ namespace NetCoreServer
                     int length = Math.Min(total - WsReceiveBuffer.Count, (int)size);
 
                     // Prepare WebSocket frame payload
-                    WsReceiveBuffer.AddRange(buffer[((int)offset + index)..((int)offset + index + length)]);
+                    foreach (var b in buffer.AsSpan((int)offset + index, length))
+                    {
+                        WsReceiveBuffer.Add(b);
+                    }
                     index += length;
                     size -= length;
 
@@ -503,6 +507,59 @@ namespace NetCoreServer
         /// Initialize WebSocket random nonce
         /// </summary>
         public void InitWsNonce() => WsRandom.NextBytes(WsNonce);
+
+        public void OnWsConnecting(HttpRequest request)
+        {
+        }
+
+        public void OnWsConnected(HttpResponse response)
+        {
+        }
+
+        public bool OnWsConnecting(HttpRequest request, HttpResponse response)
+        {
+            return true;
+        }
+
+        public void OnWsConnected(HttpRequest request)
+        {
+        }
+
+        public void OnWsDisconnecting()
+        {
+        }
+
+        public void OnWsDisconnected()
+        {
+        }
+
+        public void OnWsReceived(byte[] buffer, long offset, long size)
+        {
+        }
+
+        public void OnWsClose(byte[] buffer, long offset, long size)
+        {
+        }
+
+        public void OnWsPing(byte[] buffer, long offset, long size)
+        {
+        }
+
+        public void OnWsPong(byte[] buffer, long offset, long size)
+        {
+        }
+
+        public void OnWsError(string error)
+        {
+        }
+
+        public void OnWsError(SocketError error)
+        {
+        }
+
+        public void SendUpgrade(HttpResponse response)
+        {
+        }
 
         /// <summary>
         /// Handshaked flag

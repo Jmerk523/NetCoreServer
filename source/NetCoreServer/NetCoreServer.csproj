@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <Version>5.0.13.0</Version>
     <Authors>Ivan Shynkarenka</Authors>
     <Copyright>Copyright (c) 2019-2021 Ivan Shynkarenka</Copyright>
@@ -16,5 +16,10 @@
     <IncludeSymbols>true</IncludeSymbols>	
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>	
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Buffers" />
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Text;
 
@@ -9,6 +10,7 @@ namespace NetCoreServer
     /// </summary>
     public class Buffer
     {
+        private bool rented;
         private byte[] _data;
         private long _size;
         private long _offset;
@@ -42,11 +44,11 @@ namespace NetCoreServer
         /// <summary>
         /// Initialize a new expandable buffer with zero capacity
         /// </summary>
-        public Buffer() { _data = new byte[0]; _size = 0; _offset = 0; }
+        public Buffer() { _data = Array.Empty<byte>(); _size = 0; _offset = 0; }
         /// <summary>
         /// Initialize a new expandable buffer with the given capacity
         /// </summary>
-        public Buffer(long capacity) { _data = new byte[capacity]; _size = 0; _offset = 0; }
+        public Buffer(long capacity) { _data = ArrayPool<byte>.Shared.Rent((int)capacity); rented = true; _size = 0; _offset = 0; }
         /// <summary>
         /// Initialize a new expandable buffer with the given data
         /// </summary>
@@ -113,8 +115,14 @@ namespace NetCoreServer
 
             if (capacity > Capacity)
             {
-                byte[] data = new byte[Math.Max(capacity, 2 * Capacity)];
+                var size = Math.Max(capacity, 2 * Capacity);
+                byte[] data = ArrayPool<byte>.Shared.Rent((int)size);
                 Array.Copy(_data, 0, data, 0, _size);
+                if (rented)
+                {
+                    ArrayPool<byte>.Shared.Return(_data);
+                }
+                rented = true;
                 _data = data;
             }
         }

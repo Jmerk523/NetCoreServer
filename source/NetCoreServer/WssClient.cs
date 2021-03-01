@@ -434,5 +434,9 @@ namespace NetCoreServer
 
         // Sync connect flag
         private bool _syncConnect;
+
+        public void SendUpgrade(HttpResponse response)
+        {
+        }
     }
 }
